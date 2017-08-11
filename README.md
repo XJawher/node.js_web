@@ -46,4 +46,19 @@ OV SSL,提供加密功能,对申请者做严格的身份审核验证,提供可�
 ![](http://i.imgur.com/NSeMtXv.png)       
 
 ## 服务器上安装和部署    
-  
+这里我用的是阿里云 ECS，**Ubuntu 14.04** ，**node.js  v6.9.5** 。     
+### 连接服务器   
+我这里用的 git 连的服务器，我个人觉得 git 比 putty 好使。友情安利一下。   
+这里分三步走，第一步上传证书到服务器。第二步修改服务器上 Nginx 目录下的 conf.d 文件夹中的 H5-lipc-7000.conf 文件。第三步重启 Nginx 。    
+1. 用 git 打开已经解压的 Nginx 文件夹，然后上传文件夹中的两个文件到服务器上传的命令是        
+
+	scp -P 7000 ./2_H5.lipc.xin.key lipc@47.33.277.180:/home/lipc/    
+	scp -P 7000 ./1_H5.lipc.xin_bundle.crt lipc@47.33.277.180:/home/lipc/        
+    
+ 这里我解释一下 `-P` 后的 7000 是我设定的防火墙端口，如果没有修改端口的话默认是 22 。`lipc` 是我设定的 H5 这个项目所在的用户。   
+上传完毕后是这样的,在服务器上会有这两个文件。     
+ ![](http://i.imgur.com/eVAmvPn.png)    
+然后把这两个文件转移到目录 /www/ssl 下。我的所有证书都在这个目录下   
+![](http://i.imgur.com/qOBRsYi.png)    
+2. 打开文件 H5-lipc-7000.conf 文件，修改配置参数    
+我的 nginx 在 `cd /etc/nginx/conf.d` 这个目录下，然后打开 **conf.d** 中的 H5-lipc-7000.conf 然后修改其内容。执行代码 `sudo vi H5-lipc-7000.conf`       
