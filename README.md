@@ -60,5 +60,41 @@ OV SSL,提供加密功能,对申请者做严格的身份审核验证,提供可�
  ![](http://i.imgur.com/eVAmvPn.png)    
 然后把这两个文件转移到目录 /www/ssl 下。我的所有证书都在这个目录下   
 ![](http://i.imgur.com/qOBRsYi.png)    
-2. 打开文件 H5-lipc-7000.conf 文件，修改配置参数    
-我的 nginx 在 `cd /etc/nginx/conf.d` 这个目录下，然后打开 **conf.d** 中的 H5-lipc-7000.conf 然后修改其内容。执行代码 `sudo vi H5-lipc-7000.conf`       
+2. 打开文件 H5-lipc-7000.conf 文件，修改配置文件参数    
+我的 nginx 配置文件在 ` /etc/nginx/conf.d` 这个目录下，然后打开 **conf.d** 中的 H5-lipc-7000.conf 第一次修改的话要先创建一个。然后修改其内容。执行代码 `sudo vi H5-lipc-7000.conf`，打开后修改文件内容为    
+    
+	upstream H5 {
+	   server 127.0.0.1:8084;
+	 }
+	server{
+	  listen 80;
+	  server_name h5.lipc.xin;
+	  return 301 https://www.lipc.xin$request_uri;
+	}
+	server{
+	  listen 443;
+	  server_name www.lipc.xin; #填写绑定证书的域名
+	  ssl on;
+	  ssl_certificate /www/ssl/1_H5.lipc.xin_bundle.crt;
+	  ssl_certificate_key /www/ssl/2_H5.lipc.xin.key;
+	  ssl_session_timeout 5m;
+	  ssl_protocols TLSv1 TLSv1.1 TLSv1.2; #按照这个协议配置
+	  ssl_ciphers ECDHE-RSA-AES128-GCM-SHA256:HIGH:!aNULL:!MD5:!RC4:!DHE;
+	  ssl_prefer_server_ciphers on;
+	
+	  if ($ssl_protocol = "") {# 加一层判断如果是空就跳转到主页，有没有这个判断无所谓
+	    rewrite ^(.*) https://$host$1 permanent;
+	  }
+	    location / {
+	    proxy_set_header X-Real-IP $remote_addr;
+	        proxy_set_header X-Forward-For $proxy_add_x_forwarded_for;
+	        proxy_set_header Host $http_host;
+	        proxy_set_header X-Nginx-Proxy true;
+	
+	        proxy_pass http://H5;
+	        proxy_redirect off;
+	  }
+	}     
+    
+然后 `sudo nginx -t`,检查有没有错误，没有错误了就 `sudo nginx -s reload`。    
+如果你配置了防火墙最后还要记得修改防火墙配置参数，把相应的端口放开。
