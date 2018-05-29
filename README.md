@@ -99,3 +99,68 @@ OV SSL,提供加密功能,对申请者做严格的身份审核验证,提供可�
 然后 `sudo nginx -t`,检查有没有错误，没有错误了就 `sudo nginx -s reload`。    
 如果你配置了防火墙最后还要记得修改防火墙配置参数，把相应的端口放开。
 ## 新鲜的 Linux 部署项目文档
+### 查看服务器的版本号
+由于项目在部署的时候用的是一个基本干净的 Linux 服务器,所以在这先查一下版本号 `cat /proc/version`.这里服务器的版本号是 **Linux version 3.10.0-693.el7.x86_64 (builder@kbuilder.dev.centos.org)**
+### 安装 node.js
+首先下载源码到本地：
+wget -c https://nodejs.org/dist/v8.9.1/node-v8.9.1.tar.gz   
+下载完毕，提取 tar 文件：    
+tar -zxvf node-v8.9.1.tar.gz   
+进入文件夹：   
+cd node-v8.9.1   
+在编译代码之前，还需要在机器上安装一些软件包，使得编译可以正常运行：   
+sudo yum install gcc gcc-c++    
+对源代码进行配置：    
+./configure    
+进行编译：    
+make    
+安装：    
+sudo make install    
+安装完成后，可以输入命令 node -v 来检查 Nodejs 是否安装成功：    
+v8.9.1    
+### 安装 Nginx
+使用./nginx -s reload重新读取配置文件，发现报nginx: [error] open() /usr/local/nginx/logs/nginx.pid failed (2: No such file or directory)错误，进到logs文件发现没有nginx.pid文件     
+/usr/local/nginx/sbin/nginx -c /usr/local/nginx/conf/nginx.conf   
+使用nginx -c的参数指定nginx.conf文件的位置     
+提示：nginx: [emerg] bind() to 0.0.0.0:80 failed (98: Address already in use)   
+killall -9 nginx 杀掉nginx 进程 然后重启就行了。 service nginx restart       
+另外 还有一个很重要的可能  ps  -ef | grep nginx 看下主目录 是哪里 是不是装了两个可恶的 Nginx 哈哈nginx     
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
