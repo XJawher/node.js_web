@@ -247,7 +247,14 @@ killall -9 nginx `杀掉nginx 进程 然后重启就行了。 `service nginx res
 	        index  index.html index.htm; # 入口
 	    }
 然后重启 `./nginx -s reload`    
-这时候输入 ip 就可以查看到部署的项目文件了.
+这时候输入 ip 就可以查看到部署的项目文件了.   
+## 部署 Node.js 项目
+现在我们这的后台是由 node 做的,要部署到这个上面.具体的部署操作见下面的操作    
+服务都是写在 server.js 中的,所以我们这里只需要用 pm2 起一下 server.js 就 OK 了,具体就是     
+
+	pm2 start server
+   
+
 
 
 
